@@ -18,29 +18,50 @@ def fetch_news_data():
     try:
         url = "https://service.upstox.com/content/open/v5/news/sub-category/news/list//market-news/stocks?page=1&pageSize=500"
         response = requests.get(url)
-        return response.json()['data']
-    except Exception as e:
+        response.raise_for_status()  # Raises an HTTPError for bad responses
+        data = response.json()
+        return data.get('data', [])  # Return empty list if 'data' key doesn't exist
+    except requests.exceptions.RequestException as e:
         st.error(f"Error fetching news data: {e}")
-        return None
+        return []
+    except ValueError as e:
+        st.error(f"Error parsing news data: {e}")
+        return []
 
 # Process news data to extract relevant information
 def process_news_data(news_data):
     processed_news = []
+    if not news_data:
+        return processed_news
+    
     for item in news_data:
-        # Extract stock symbols from the news title/content
-        symbols_in_news = []
-        for stock in stocks:
-            if stock.lower() in item['title'].lower() or stock.lower() in item['content'].lower():
-                symbols_in_news.append(stock)
-        
-        if symbols_in_news:
-            processed_news.append({
-                'title': item['title'],
-                'content': item['content'],
-                'published_at': item['publishedAt'],
-                'symbols': symbols_in_news,
-                'sentiment': random.uniform(-1, 1)  # Placeholder - in real app you'd use NLP sentiment analysis
-            })
+        try:
+            # Skip if item doesn't have required fields
+            if not all(key in item for key in ['title', 'content', 'publishedAt']):
+                continue
+                
+            # Extract stock symbols from the news title/content
+            symbols_in_news = []
+            title = item.get('title', '').lower()
+            content = item.get('content', '').lower()
+            
+            for stock in stocks:
+                stock_lower = stock.lower()
+                if stock_lower in title or stock_lower in content:
+                    symbols_in_news.append(stock)
+            
+            if symbols_in_news:
+                processed_news.append({
+                    'title': item['title'],
+                    'content': item['content'],
+                    'published_at': item['publishedAt'],
+                    'symbols': symbols_in_news,
+                    'sentiment': random.uniform(-1, 1)  # Placeholder for actual sentiment analysis
+                })
+        except Exception as e:
+            st.warning(f"Error processing news item: {e}")
+            continue
+            
     return processed_news
 
 # Define the list of stocks
