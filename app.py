@@ -66,7 +66,7 @@ def process_news_data(news_data):
 
 # Define the list of stocks
 stocks = [
-    "NYKAA", "MRF", "M&M", "BHARATFORG", "AXISBANK", "NESTLEIND", "TECHM", "DMART", 
+    "BAJAJHFL", "MRF", "M&M", "BHARATFORG", "AXISBANK", "NESTLEIND", "TECHM", "DMART", 
     "KPIGREEN", "RCOM", "TATACOMM", "JKCEMENT", "HCLTECH", "IDEA", "RAYMOND", 
     "RAYMONDLSL", "TORNTPHARM", "APLLTD", "WAAREEENER", "JYOTICNC", "KTKBANK", 
     "JBCHEPHARM", "HAL"
@@ -74,7 +74,7 @@ stocks = [
 
 # Define sectors for each stock
 sector_mapping = {
-    'NYKAA': 'Consumer Goods',
+    'BAJAJHFL': 'Consumer Goods',
     'MRF': 'Automotive',
     'M&M': 'Automotive',
     'BHARATFORG': 'Industrial',
@@ -101,7 +101,7 @@ sector_mapping = {
 
 # Define event types for each stock
 event_mapping = {
-    'NYKAA': 'agreement',
+    'BAJAJHFL': 'agreement',
     'MRF': 'financial',
     'M&M': 'financial',
     'BHARATFORG': 'financial',
